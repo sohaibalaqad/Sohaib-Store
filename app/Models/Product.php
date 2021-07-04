@@ -10,5 +10,7 @@ class Product extends Model
     use HasFactory;
 
     const STATUS_ACTIVE = 'active';
-    CONST STATUS_DRAFT = 'draft';
+    const STATUS_DRAFT = 'draft';
+
+
 }
