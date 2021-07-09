@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Category;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class CategoriesController extends Controller
 {
@@ -42,9 +43,9 @@ class CategoriesController extends Controller
                 'categories.*',
                 'parents.name as parent_name'
             ])
-            ->where('categories.status', '=', 'active')
+            // ->where('categories.status', '=', 'active')
             ->orderBy('categories.created_at', 'DESC')
-            ->orderBy('categories.name', 'ASC')
+            // ->orderBy('categories.name', 'ASC')
             ->get();
 
         return view('admin.categories.index')->with([
@@ -62,7 +63,8 @@ class CategoriesController extends Controller
      */
     public function create()
     {
-        //
+        $parents = Category::all();
+        return view('admin.categories.create', compact('parents'));
     }
 
     /**
@@ -73,7 +75,43 @@ class CategoriesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        // return array of all form fields 
+        // $request->all();
+
+        // return single field value , (5 method)
+        // $request->name;
+        // $request->input('name');
+        // $request->get('name');
+        // $request->post('name');
+        // $request->query('name'); // ?name=value
+
+        // Method #1
+        /*$category = new Category();
+        $category->name = $request->post('name');
+        $category->slug = Str::slug($request->post('name'));
+        $category->parent_id = $request->post('parent_id');
+        $category->description = $request->post('description');
+        $category->status = $request->post('status', 'active');
+        $category->save();*/
+
+        // Request Merge
+        $request->merge([
+            'slug' => Str::slug($request->post('name')),
+        ]);
+        // Method #2 >> Mass assignment
+        $category = Category::create($request->all());
+
+        // Method #3 >> Mass assignment
+        /*$category = new Category([
+            'name' => $request->post('name'),
+            'slug' => Str::slug($request->post('name')),
+            'parent_id' => $request->post('parent_id'),
+            'description' => $request->post('description'),
+            'status' => $request->post('status', 'active'),
+        ]);
+        $category->save();*/
+
+        return redirect()->route('categories.index');
     }
 
     /**
