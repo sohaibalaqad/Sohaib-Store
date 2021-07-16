@@ -8,7 +8,7 @@
     </ol>
 @endsection
 @section('content')
-    <form action="{{ route('categories.update', $category->id) }}" method="post">
+    <form action="{{ route('categories.update', $category->id) }}" method="post" enctype="multipart/form-data">
         @csrf
         {{-- form method spoofing --}}
         {{-- Method #1 --}}

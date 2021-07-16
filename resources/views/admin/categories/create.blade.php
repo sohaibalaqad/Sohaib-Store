@@ -8,7 +8,7 @@
     </ol>
 @endsection
 @section('content')
-    <form action="{{ route('categories.store') }}" method="post">
+    <form action="{{ route('categories.store') }}" method="post" enctype="multipart/form-data">
         {{-- CSRF Token --}}
         {{-- 1 --}}
         {{-- <input type="hidden" name="_token" value="{{ csrf_token() }}"> --}}

@@ -3,10 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CategoryRequest;
 use App\Models\Category;
+use Illuminate\Auth\Events\Validated;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Str;
 
 class CategoriesController extends Controller
@@ -78,8 +81,37 @@ class CategoriesController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(CategoryRequest $request)
     {
+
+        /**
+         * Validation 
+         */
+        // $rules = [
+        //     'name'=> 'required|string|max:255|min:3|unique:categories',
+        //     'parent_id' => 'nullable|int|exists:categories,id',
+        //     'description' => 'nullable|min:5',
+        //     'status' => 'required|in:active,draft',
+        //     'image' => 'image|max:512000|dimensions:min_width=300,min_height=300',
+        // ];
+        // Method #1 validate in request object 
+        // $clean = $request->validate($rules, [
+        //     'required' => 'حقل :attribute مطلوب', 
+        //     'name.required' => 'Category name is required!',
+        // ]);
+        /*// Method #2 validate in Controller
+        $clean = $this->validate($request, $rules, []);
+        // Method #3 (Adjust settings manually)
+        $data = $request->all();
+        $validator = Validator::make($data, $rules, []);
+        // $clean = $validator->validate();
+        if ($validator->fails()){ // return true if there is an error
+            return redirect()
+            ->back()
+            ->withErrors($validator)
+            ->withInput();
+        }  */
+
         // return array of all form fields 
         // $request->all();
 
@@ -101,7 +133,7 @@ class CategoriesController extends Controller
 
         // Request Merge
         $request->merge([
-            'slug' => Str::slug($request->post('name')),
+            'slug' => Str::slug($request->name),
         ]);
         // Method #2 >> Mass assignment
         $category = Category::create($request->all());
@@ -116,7 +148,8 @@ class CategoriesController extends Controller
         ]);
         $category->save();*/
 
-        return redirect()->route('categories.index');
+        return redirect()->route('categories.index')
+            ->with('success', 'Category Created');
     }
 
     /**
@@ -151,7 +184,7 @@ class CategoriesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(CategoryRequest $request, $id)
     {
         $category = Category::find($id);
 
@@ -169,7 +202,8 @@ class CategoriesController extends Controller
         // $category->fill($request->all())->save();
 
         // PRG
-        return redirect()->route('categories.index');
+        return redirect()->route('categories.index')
+            ->with('success', 'Category Updated');
     }
 
     /**
