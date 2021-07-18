@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\CategoriesController;
+use App\Http\Controllers\Admin\ProductsController;
 use Illuminate\Routing\Route as RoutingRoute;
 use Illuminate\Support\Facades\Route;
 
@@ -31,3 +32,5 @@ Route::delete('admin/categories/{id}', [CategoriesController::class, 'destroy'])
  * This route is an abbreviation of all the routes above & standard
  */
 // Route::resource('admin/categories', CategoriesController::class);
+
+Route::resource('admin/products', ProductsController::class);
