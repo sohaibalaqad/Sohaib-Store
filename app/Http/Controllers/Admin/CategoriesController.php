@@ -14,6 +14,15 @@ use Illuminate\Support\Str;
 
 class CategoriesController extends Controller
 {
+
+    public function __construct()
+    {
+        $this->middleware([
+            'auth',
+            // 'verified',  // verify email
+        ]);
+    }
+
     /**
      * Display a listing of the resource.
      *

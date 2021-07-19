@@ -25,7 +25,6 @@
     <table class="table">
         <thead>
             <tr>
-                <th>Id</th>
                 <th>Name</th>
                 <th>Slug</th>
                 <th>Parent Id</th>
@@ -38,7 +37,6 @@
         <tbody>
             @foreach ($categories as $category) 
                 <tr>
-                    <td>{{ $category->id }}</td>
                     <td>{{ $category->name }}</td>
                     <td>{{ $category->slug }}</td>
                     <td>{{ $category->parent_name }}</td>
