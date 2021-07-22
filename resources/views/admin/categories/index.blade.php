@@ -9,19 +9,7 @@
     </ol>
 @endsection
 @section('content')
-
-    {{-- @if ($success)
-        <div class="alert alert-success">
-            {{ $success }}
-        </div>
-    @endif --}}
-    {{-- OR --}}
-    @if (Session::has('success'))
-        <div class="alert alert-success">
-            {{ Session()->get('success') }}
-        </div>
-    @endif
-    
+    <x-alert />
     <table class="table">
         <thead>
             <tr>
@@ -35,19 +23,21 @@
             </tr>
         </thead>
         <tbody>
-            @foreach ($categories as $category) 
+            @foreach ($categories as $category)
                 <tr>
                     <td>{{ $category->name }}</td>
                     <td>{{ $category->slug }}</td>
                     <td>{{ $category->parent_name }}</td>
                     <td>{{ $category->status }}</td>
                     <td>{{ $category->created_at }}</td>
-                    <td><a href="{{ route('categories.edit',  $category->id) }}" class="btn btn-sm btn-dark">Edit</a></td>
-                    <td><form action="{{ route('categories.destroy',  $category->id) }}" method="post">
-                        @csrf
-                        @method('delete')
-                        <button type="submit" class="btn btn-sm btn-danger">Delete</button>
-                    </form></td>
+                    <td><a href="{{ route('categories.edit', $category->id) }}" class="btn btn-sm btn-dark">Edit</a></td>
+                    <td>
+                        <form action="{{ route('categories.destroy', $category->id) }}" method="post">
+                            @csrf
+                            @method('delete')
+                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                        </form>
+                    </td>
                 </tr>
             @endforeach
         </tbody>

@@ -9,19 +9,7 @@
     </ol>
 @endsection
 @section('content')
-
-    {{-- @if ($success)
-        <div class="alert alert-success">
-            {{ $success }}
-        </div>
-    @endif --}}
-    {{-- OR --}}
-    @if (Session::has('success'))
-        <div class="alert alert-success">
-            {{ Session()->get('success') }}
-        </div>
-    @endif
-
+    <x-alert />
     <table class="table">
         <thead>
             <tr>
@@ -39,7 +27,7 @@
         <tbody>
             @foreach ($products as $product)
                 <tr>
-                    <td><img src="{{ asset('uploads/'.$product->image_path) }}" width="50" alt=""></td>
+                    <td><img src="{{ asset('uploads/' . $product->image_path) }}" width="50" alt=""></td>
                     <td>{{ $product->name }}</td>
                     <td>{{ $product->category_name }}</td>
                     <td>{{ $product->price }}</td>
