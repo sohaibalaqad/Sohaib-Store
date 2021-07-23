@@ -22,7 +22,7 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth'])->name('dashboard');
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
 
 Route::get('admin/categories', [CategoriesController::class, 'index'])->name('categories.index');
 Route::get('admin/categories/create', [CategoriesController::class, 'create'])->name('categories.create');
@@ -37,4 +37,7 @@ Route::delete('admin/categories/{id}', [CategoriesController::class, 'destroy'])
  */
 // Route::resource('admin/categories', CategoriesController::class);
 
+Route::get('admin/products/trash', [ProductsController::class, 'trash'])->name('products.trash');
+Route::put('admin/products/trash/{id?}', [ProductsController::class, 'restore'])->name('products.restore');
+Route::delete('admin/products/trash/{id?}', [ProductsController::class, 'forceDelete'])->name('products.force-delete');
 Route::resource('admin/products', ProductsController::class)->middleware(['auth']);

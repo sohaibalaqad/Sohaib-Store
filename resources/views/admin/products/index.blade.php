@@ -1,6 +1,12 @@
 @extends('layouts.admin')
 @section('title')
-    Products <a href="{{ route('products.create') }}">Create</a>
+    <div class="d-flex justify-content-between">
+        <h2>Products</h2>
+        <div class="">
+            <a class="btn btn-sm btn-outline-primary" href="{{ route('products.create') }}">Create</a>
+            <a class="btn btn-sm btn-outline-dark" href="{{ route('products.trash') }}">Trash</a>
+        </div>
+    </div>
 @endsection
 @section('breadcrumb')
     <ol class="breadcrumb float-sm-right">
@@ -27,10 +33,10 @@
         <tbody>
             @foreach ($products as $product)
                 <tr>
-                    <td><img src="{{ asset('uploads/' . $product->image_path) }}" width="50" alt=""></td>
+                    <td><img src="{{ $product->image_url }}" width="50" alt=""></td>
                     <td>{{ $product->name }}</td>
                     <td>{{ $product->category_name }}</td>
-                    <td>{{ $product->price }}</td>
+                    <td>{{ $product->formatted_price }}</td>
                     <td>{{ $product->quantity }}</td>
                     <td>{{ $product->status }}</td>
                     <td>{{ $product->created_at }}</td>

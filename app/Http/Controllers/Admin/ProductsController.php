@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Product;
+use App\Scopes\ActiveStatusScope;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
@@ -23,6 +24,7 @@ class ProductsController extends Controller
                 'products.*',
                 'categories.name as category_name'
             ])
+            ->withoutGlobalScope(ActiveStatusScope::class)
             ->paginate(10, ['*'], 'p');
         // OR 
         // ->simplepaginate();
@@ -54,9 +56,9 @@ class ProductsController extends Controller
     public function store(Request $request)
     {
         $request->validate(Product::validateRules());
-        $request->merge([
-            'slug' => Str::slug($request->post('name')),
-        ]);
+        // $request->merge([
+        //     'slug' => Str::slug($request->post('name')),
+        // ]);
         $product = Product::create($request->all());
         return redirect()->route('products.index')
             ->with('success', "Product $product->name Created.");
@@ -70,7 +72,7 @@ class ProductsController extends Controller
      */
     public function show($id)
     {
-        $product = Product::findOrFail($id);
+        $product = Product::withoutGlobalScope(ActiveStatusScope::class)->findOrFail($id);
         return view('admin.products.show', [
             'product' => $product,
         ]);
@@ -84,10 +86,10 @@ class ProductsController extends Controller
      */
     public function edit($id)
     {
-        $product = Product::findOrFail($id);
+        $product = Product::withoutGlobalScope(ActiveStatusScope::class)->findOrFail($id);
         return view('admin.products.edit', [
             'product' => $product,
-            'categories' => Category::pluck('name', 'id'),
+            'categories' => Category::withTrashed()->pluck('name', 'id'),
         ]);
     }
 
@@ -100,13 +102,13 @@ class ProductsController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $product = Product::findOrFail($id);
+        $product = Product::withoutGlobalScope(ActiveStatusScope::class)->findOrFail($id);
         $request->validate(Product::validateRules());
         if ($request->hasFile('image')) {
             Storage::disk('uploads')->delete($product->image_path);
             $file = $request->file('image'); // uploudedFile object
             // store() Vs. storeAs : store=> random file name
-            $image_path = $file->store('/',[
+            $image_path = $file->store('/', [
                 'disk' => 'uploads'
             ]);
             $request->merge([
@@ -141,10 +143,44 @@ class ProductsController extends Controller
      */
     public function destroy($id)
     {
-        $product = Product::findOrFail($id);
+        $product = Product::withoutGlobalScope(ActiveStatusScope::class)->findOrFail($id);
         $product->delete();
-        Storage::disk('uploads')->delete($product->image_path);
+        // Storage::disk('uploads')->delete($product->image_path);
         return redirect()->route('products.index')
             ->with('success', "Product $product->name deleted.");
+    }
+
+    public function trash()
+    {
+        $products = Product::withoutGlobalScope(ActiveStatusScope::class)->onlyTrashed()->paginate();
+        return view('admin.products.trash', [
+            'products' => $products,
+        ]);
+    }
+
+    public function restore(Request $request, $id = null)
+    {
+        if ($id) {
+            $product = Product::withoutGlobalScope(ActiveStatusScope::class)->onlyTrashed()->findOrFail($id);
+            $product->restore();
+            return redirect()->route('products.index')
+                ->with('success', "Product $product->name restred.");
+        }
+        Product::withoutGlobalScope(ActiveStatusScope::class)->onlyTrashed()->restore();
+        return redirect()->route('products.index')
+            ->with('success', "All trashed products restred.");
+    }
+
+    public function forceDelete($id = null)
+    {
+        if ($id) {
+            $product = Product::withoutGlobalScope(ActiveStatusScope::class)->onlyTrashed()->findOrFail($id);
+            $product->forceDelete();
+            return redirect()->route('products.index')
+                ->with('success', "Product $product->name deleted forever.");
+        }
+        Product::withoutGlobalScope(ActiveStatusScope::class)->onlyTrashed()->forceDelete();
+        return redirect()->route('products.index')
+            ->with('success', "All trashed products deleted forever.");
     }
 }
