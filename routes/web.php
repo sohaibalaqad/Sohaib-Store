@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\CategoriesController;
 use App\Http\Controllers\Admin\ProductsController;
+use App\Http\Controllers\Admin\RolesController;
 use App\Http\Controllers\HomeController;
 use Illuminate\Support\Facades\Route;
 
@@ -24,13 +25,22 @@ Route::get('/dashboard', function () {
 
 require __DIR__ . '/auth.php';
 
-Route::get('admin/categories', [CategoriesController::class, 'index'])->name('categories.index');
-Route::get('admin/categories/create', [CategoriesController::class, 'create'])->name('categories.create');
-Route::post('admin/categories', [CategoriesController::class, 'store'])->name('categories.store');
-Route::get('admin/categories/{id}', [CategoriesController::class, 'show'])->name('categories.show');
-Route::get('admin/categories/{id}/edit', [CategoriesController::class, 'edit'])->name('categories.edit');
-Route::put('admin/categories/{id}', [CategoriesController::class, 'update'])->name('categories.update');
-Route::delete('admin/categories/{id}', [CategoriesController::class, 'destroy'])->name('categories.destroy');
+Route::get('admin/categories', [CategoriesController::class, 'index'])
+    ->name('categories.index')
+    ->middleware(['auth', 'can:categories.view-any']);
+Route::get('admin/categories/create', [CategoriesController::class, 'create'])
+    ->name('categories.create')
+    ->middleware(['auth', 'can:categories.create']);
+Route::post('admin/categories', [CategoriesController::class, 'store'])
+    ->name('categories.store');
+Route::get('admin/categories/{id}', [CategoriesController::class, 'show'])
+    ->name('categories.show');
+Route::get('admin/categories/{id}/edit', [CategoriesController::class, 'edit'])
+    ->name('categories.edit');
+Route::put('admin/categories/{id}', [CategoriesController::class, 'update'])
+    ->name('categories.update');
+Route::delete('admin/categories/{id}', [CategoriesController::class, 'destroy'])
+    ->name('categories.destroy');
 
 /**
  * This route is an abbreviation of all the routes above & standard
@@ -38,6 +48,10 @@ Route::delete('admin/categories/{id}', [CategoriesController::class, 'destroy'])
 // Route::resource('admin/categories', CategoriesController::class);
 
 Route::get('admin/products/trash', [ProductsController::class, 'trash'])->name('products.trash');
-Route::put('admin/products/trash/{id?}', [ProductsController::class, 'restore'])->name('products.restore');
+Route::put('admin/products/trash/{product?}', [ProductsController::class, 'restore'])
+    ->name('products.restore')
+    ->middleware(['auth', 'can:restore,product']);
 Route::delete('admin/products/trash/{id?}', [ProductsController::class, 'forceDelete'])->name('products.force-delete');
 Route::resource('admin/products', ProductsController::class)->middleware(['auth']);
+
+Route::resource('admin/roles', RolesController::class)->middleware(['auth']);
