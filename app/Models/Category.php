@@ -37,7 +37,7 @@ class Category extends Model
      * Accessors
      * named =>> get[AttributeName]Attribute
      */
-    // 1. Exists Attribute 
+    // 1. Exists Attribute
     public function getNameAttribute($value)
     {
         if ($this->trashed()) {
@@ -45,10 +45,25 @@ class Category extends Model
         }
         return $value;
     }
-    
+
     // 1. Non-exists Attribute
     public function getOriginalNameAttribute()
     {
         return $this->attributes['name'];
+    }
+
+    public function products(){
+        return $this->hasMany(Product::class, 'category_id', 'id');
+    }
+
+    public function childern(){
+        return $this->hasMany(Category::class, 'parent_id', 'id');
+    }
+
+    public function parent(){
+        return $this->belongsTo(Category::class, 'parent_id', 'id')
+            ->withDefault([
+                'name' => 'No found',
+            ]);
     }
 }

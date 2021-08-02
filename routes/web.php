@@ -33,7 +33,7 @@ Route::get('admin/categories/create', [CategoriesController::class, 'create'])
     ->middleware(['auth', 'can:categories.create']);
 Route::post('admin/categories', [CategoriesController::class, 'store'])
     ->name('categories.store');
-Route::get('admin/categories/{id}', [CategoriesController::class, 'show'])
+Route::get('admin/categories/{category}', [CategoriesController::class, 'show'])
     ->name('categories.show');
 Route::get('admin/categories/{id}/edit', [CategoriesController::class, 'edit'])
     ->name('categories.edit');
@@ -55,3 +55,6 @@ Route::delete('admin/products/trash/{id?}', [ProductsController::class, 'forceDe
 Route::resource('admin/products', ProductsController::class)->middleware(['auth']);
 
 Route::resource('admin/roles', RolesController::class)->middleware(['auth']);
+
+//***********
+Route::get('admin/get-user', [HomeController::class, 'getUser']);

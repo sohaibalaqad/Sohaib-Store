@@ -31,7 +31,7 @@ class Product extends Model
     ];
 
     // number of rows from paginate
-    // protected $perPage = 30; 
+    // protected $perPage = 30;
 
     /**
      * Global Scope
@@ -101,5 +101,9 @@ class Product extends Model
     {
         $formatter = new NumberFormatter(App::getLocale(), NumberFormatter::CURRENCY);
         return $formatter->formatCurrency($this->price, 'ILS');
+    }
+
+    public function category(){
+        return $this->belongsTo(Category::class, 'category_id', 'id');
     }
 }

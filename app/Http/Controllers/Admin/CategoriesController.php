@@ -34,7 +34,7 @@ class CategoriesController extends Controller
         // SELECT * FROM categories;
         // $entries = Category::all();
 
-        // return collection of std Object 
+        // return collection of std Object
         /*
         $entries = DB::table('categories')
             ->where('status', '=', 'active')
@@ -51,7 +51,7 @@ class CategoriesController extends Controller
         ORDER BY created_at DESC, name ASC
         */
 
-        $entries = Category::leftJoin('categories as parents', 'parents.id', '=', 'categories.parent_id')
+        /*$entries = Category::leftJoin('categories as parents', 'parents.id', '=', 'categories.parent_id')
             ->select([
                 'categories.*',
                 'parents.name as parent_name'
@@ -60,6 +60,10 @@ class CategoriesController extends Controller
             ->orderBy('categories.created_at', 'DESC')
             // ->orderBy('categories.name', 'ASC')
             ->get();
+        */
+
+        $entries = Category::withCount('products as count')->get();
+//        dd($categories);
 
         $success = session()->get('success');
 
@@ -68,7 +72,7 @@ class CategoriesController extends Controller
             'title' => 'Categories List',
             'success' => $success,
         ]);
-        // OR 
+        // OR
         // return view('admin.categories.index', compact('entries'));
     }
 
@@ -94,7 +98,7 @@ class CategoriesController extends Controller
     {
 
         /**
-         * Validation 
+         * Validation
          */
         // $rules = [
         //     'name'=> 'required|string|max:255|min:3|unique:categories',
@@ -103,9 +107,9 @@ class CategoriesController extends Controller
         //     'status' => 'required|in:active,draft',
         //     'image' => 'image|max:512000|dimensions:min_width=300,min_height=300',
         // ];
-        // Method #1 validate in request object 
+        // Method #1 validate in request object
         // $clean = $request->validate($rules, [
-        //     'required' => 'حقل :attribute مطلوب', 
+        //     'required' => 'حقل :attribute مطلوب',
         //     'name.required' => 'Category name is required!',
         // ]);
         /*// Method #2 validate in Controller
@@ -121,7 +125,7 @@ class CategoriesController extends Controller
             ->withInput();
         }  */
 
-        // return array of all form fields 
+        // return array of all form fields
         // $request->all();
 
         // return single field value , (5 method)
@@ -167,9 +171,9 @@ class CategoriesController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show($id)
+    public function show(Category $category)
     {
-        //
+        return $category->products()->count();
     }
 
     /**
@@ -241,22 +245,22 @@ class CategoriesController extends Controller
          * flash message
          * store message (write into session)
          */
-        // Session::put(); 
-        // OR 
+        // Session::put();
+        // OR
         // session([
         //     'success'=> 'Category Deleted',
         // ]);
-        // OR 
+        // OR
         // session()->put('success', 'Category Deleted');
         /* read message (read from session)  */
         // Session::get();
-        // OR 
+        // OR
         // session('success');
-        // OR 
+        // OR
         // session()->get('success');
         /* delete message (delete from session) */
         // Session::forget();
-        // OR 
+        // OR
         // session()->forget('success');
         /**
          * OR this method
@@ -267,4 +271,5 @@ class CategoriesController extends Controller
         return redirect()->route('categories.index')
             ->with('success', 'Category Deleted');
     }
+
 }
