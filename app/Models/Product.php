@@ -104,6 +104,15 @@ class Product extends Model
     }
 
     public function category(){
-        return $this->belongsTo(Category::class, 'category_id', 'id');
+        return $this->belongsTo(Category::class, 'category_id', 'id')
+            ->withDefault();
+    }
+
+    public function user(){
+        return $this->belongsTo(User::class)->withDefault();
+    }
+
+    public function ratings(){
+        return $this->morphMany(Rating::class, 'rateable');
     }
 }

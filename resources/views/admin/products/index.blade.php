@@ -37,7 +37,7 @@
                 <tr>
                     <td><img src="{{ $product->image_url }}" width="50" alt=""></td>
                     <td>{{ $product->name }}</td>
-                    <td>{{ $product->category_name }}</td>
+                    <td>{{ $product->category->name }} / {{ $product->category->parent->name }}</td>
                     <td>{{ $product->formatted_price }}</td>
                     <td>{{ $product->quantity }}</td>
                     <td>{{ $product->status }}</td>

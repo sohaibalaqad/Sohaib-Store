@@ -21,14 +21,15 @@ class ProductsController extends Controller
     public function index()
     {
         $this->authorize('view-any', Product::class);
-        $products = Product::join('categories', 'categories.id', '=', 'products.category_id')
+        $products = Product::with('category.parent')
+//        join('categories', 'categories.id', '=', 'products.category_id')
             ->select([
                 'products.*',
-                'categories.name as category_name'
+//                'categories.name as category_name'
             ])
             ->withoutGlobalScope(ActiveStatusScope::class)
             ->paginate(10, ['*'], 'p');
-        // OR 
+        // OR
         // ->simplepaginate();
         return view('admin.products.index', [
             'products' => $products,
@@ -64,7 +65,7 @@ class ProductsController extends Controller
         /*if(!Gate::allows('products.create')){
             abort(403);
         }*/
-        $this->authorize('create', Product::class); 
+        $this->authorize('create', Product::class);
         $request->validate(Product::validateRules());
         // $request->merge([
         //     'slug' => Str::slug($request->post('name')),
@@ -83,6 +84,7 @@ class ProductsController extends Controller
     public function show($id)
     {
         $product = Product::withoutGlobalScope(ActiveStatusScope::class)->findOrFail($id);
+        return $product->ratings;
         $this->authorize('view', $product);
         return view('admin.products.show', [
             'product' => $product,
@@ -128,7 +130,7 @@ class ProductsController extends Controller
                 'image_path' => $image_path,
             ]);
 
-            // file information 
+            // file information
             /* $file->getClientOriginalName(); // return file name
             $file->getClientOriginalExtension(); // return file extension
             $file->getClientMimeType(); // Ex: image/jpeg
@@ -159,7 +161,7 @@ class ProductsController extends Controller
         // if(!Gate::allows('products.delete')){
         //     abort(403);
         // }
-        // OR 
+        // OR
         //Gate::authorize('products.delete');
 
         $product = Product::withoutGlobalScope(ActiveStatusScope::class)->findOrFail($id);

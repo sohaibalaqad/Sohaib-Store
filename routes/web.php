@@ -4,6 +4,9 @@ use App\Http\Controllers\Admin\CategoriesController;
 use App\Http\Controllers\Admin\ProductsController;
 use App\Http\Controllers\Admin\RolesController;
 use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Admin\CountriesController;
+use \App\Http\Controllers\RatingsController;
+use App\Http\Controllers\Admin\ProfilesController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -58,3 +61,10 @@ Route::resource('admin/roles', RolesController::class)->middleware(['auth']);
 
 //***********
 Route::get('admin/get-user', [HomeController::class, 'getUser']);
+
+Route::resource('admin/countries', CountriesController::class)->middleware(['auth']);
+
+Route::post('ratings/{type}', [RatingsController::class, 'store'])
+    ->where('type', 'profile|product');
+
+Route::resource('admin/profiles', ProfilesController::class)->middleware(['auth']);

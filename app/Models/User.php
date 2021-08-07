@@ -67,4 +67,12 @@ class User extends Authenticatable implements MustVerifyEmail
             'id',
             'id');
     }
+
+    public function country(){
+        return $this->belongsTo(Country::class)->withDefault();
+    }
+
+    public function products(){
+        return $this->hasMany(Product::class);
+    }
 }

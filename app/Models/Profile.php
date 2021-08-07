@@ -14,4 +14,8 @@ class Profile extends Model
             'address' => 'Not enterd',
         ]);
     }
+
+    public function ratings(){
+        return $this->morphMany(Rating::class, 'rateable');
+    }
 }

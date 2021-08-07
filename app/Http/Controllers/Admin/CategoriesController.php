@@ -62,8 +62,14 @@ class CategoriesController extends Controller
             ->get();
         */
 
-        $entries = Category::withCount('products as count')->get();
-//        dd($categories);
+        $entries = Category::with('parent')
+            ->withCount('products as count')
+//            ->has('products')         // Categories containing products only
+//            ->doesntHave('products')  // Only non-product categories
+//            ->whereHas('products', function ($query){
+//                $query->where('price', '>', 1500);
+//            })
+            ->paginate();
 
         $success = session()->get('success');
 
@@ -173,7 +179,19 @@ class CategoriesController extends Controller
      */
     public function show(Category $category)
     {
-        return $category->products()->count();
+        return $category->load([
+            'parent',
+            'products' => function($query){
+                $query->orderBy('price', 'ASC')
+                    ->where('status', 'active');
+            }
+        ]);
+//        SELECT * FROM products WHERE category_id = ? ORDER BY name
+        return $category->products()
+            ->with('category:id,name,slug')
+            ->where('price', '>', 1500)
+            ->orderBy('price', 'ASC')
+            ->get();
     }
 
     /**
@@ -271,5 +289,4 @@ class CategoriesController extends Controller
         return redirect()->route('categories.index')
             ->with('success', 'Category Deleted');
     }
-
 }
