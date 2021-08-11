@@ -69,7 +69,7 @@ class CategoriesController extends Controller
 //            ->whereHas('products', function ($query){
 //                $query->where('price', '>', 1500);
 //            })
-            ->paginate();
+            ->simplePaginate(5);
 
         $success = session()->get('success');
 

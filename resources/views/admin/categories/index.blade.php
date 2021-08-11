@@ -13,12 +13,12 @@
     <table class="table">
         <thead>
             <tr>
-                <th>Name</th>
-                <th>Slug</th>
-                <th>Parent Id</th>
-                <th>Products Count</th>
-                <th>Status</th>
-                <th>Created At</th>
+                <th>{{ __('Name') }}</th>
+                <th>{{ trans('Slug') }}</th>
+                <th>{{ \Illuminate\Support\Facades\Lang::get('Parent Name') }}</th>
+                <th>@lang('Products Count')</th>
+                <th>{{ __('Status') }}</th>
+                <th>{{ __('Created At') }}</th>
                 <th></th>
                 <th></th>
             </tr>
@@ -32,16 +32,17 @@
                     <td>{{ $category->count }}</td>
                     <td>{{ $category->status }}</td>
                     <td>{{ $category->created_at }}</td>
-                    <td><a href="{{ route('categories.edit', $category->id) }}" class="btn btn-sm btn-dark">Edit</a></td>
+                    <td><a href="{{ route('categories.edit', $category->id) }}" class="btn btn-sm btn-dark">{{ __('Edit') }}</a></td>
                     <td>
                         <form action="{{ route('categories.destroy', $category->id) }}" method="post">
                             @csrf
                             @method('delete')
-                            <button type="submit" class="btn btn-sm btn-danger">Delete</button>
+                            <button type="submit" class="btn btn-sm btn-danger">{{ __('Delete') }}</button>
                         </form>
                     </td>
                 </tr>
             @endforeach
         </tbody>
     </table>
+    {{ $categories->links() }}
 @endsection
