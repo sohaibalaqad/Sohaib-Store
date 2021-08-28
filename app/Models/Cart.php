@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
 class Cart extends Model
 {
@@ -18,8 +19,24 @@ class Cart extends Model
         'product',
     ];
 
+    protected static function booted()
+    {
+        /**
+         *  Events: creating, created, 
+         *          updating, updated, 
+         *          saving , saved,
+         *          deleting, deleted,
+         *          restoring, restored
+         */
+
+        static::creating(function(Cart $cart){
+            $cart->id = Str::uuid();
+        });
+    }
+
     public function product()
     {
         return $this->belongsTo(Product::class);
     }
+
 }

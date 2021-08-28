@@ -8,6 +8,8 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Admin\CountriesController;
 use App\Http\Controllers\RatingsController;
 use App\Http\Controllers\Admin\ProfilesController;
+use App\Http\Controllers\ProductsController as ControllersProductsController;
+use App\Models\Product;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -78,11 +80,13 @@ Route::namespace('Admin')
         Route::resource('/profiles', ProfilesController::class);
     });
 
+Route::get('products', [ControllersProductsController::class, 'index'])
+    ->name('products');
+Route::get('products/{slug}', [ControllersProductsController::class, 'show'])
+    ->name('product.details');
+
 Route::post('ratings/{type}', [RatingsController::class, 'store'])
     ->where('type', 'profile|product');
 
-Route::get('/cart', [CartController::class, 'index'])
-    ->name('cart.index');
-
-Route::post('/cart', [CartController::class, 'store'])
-    ->name('cart.store');
+Route::get('/cart', [CartController::class, 'index'])->name('cart');
+Route::post('/cart', [CartController::class, 'store']);

@@ -30,6 +30,12 @@ class Product extends Model
         'quantity' => 'int',
     ];
 
+    protected $appends = [
+        'image_url',
+        'formatted_price',
+        'permalink',
+    ];
+
     // number of rows from paginate
     // protected $perPage = 30;
 
@@ -101,6 +107,11 @@ class Product extends Model
     {
         $formatter = new NumberFormatter(App::getLocale(), NumberFormatter::CURRENCY);
         return $formatter->formatCurrency($this->price, 'ILS');
+    }
+
+    public function getPermalinkAttribute()
+    {
+        return route('product.details', $this->slug);
     }
 
     public function category(){
