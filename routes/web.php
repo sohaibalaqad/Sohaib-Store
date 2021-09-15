@@ -10,6 +10,7 @@ use App\Http\Controllers\RatingsController;
 use App\Http\Controllers\Admin\ProfilesController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\ProductsController as ControllersProductsController;
+use App\Http\Controllers\MessagesController;
 use App\Models\Product;
 use Illuminate\Support\Facades\Route;
 
@@ -100,3 +101,7 @@ Route::post('/checkout', [CheckoutController::class, 'store']);
 Route::get('/orders', function (){
     return \App\Models\Order::all();
 })->name('orders');
+
+Route::get('chat', [MessagesController::class, 'index'])
+    ->name('chat');
+Route::post('chat', [MessagesController::class, 'store']);
