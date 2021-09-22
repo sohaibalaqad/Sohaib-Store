@@ -23,7 +23,7 @@
             <p>Number of items:<span>{{ $cart->quantity()}}</span></p>
             <p>Item Total:<span>£{{ $cart->total() }}</span></p>
         </div>
-        <div class="ps-cart__footer"><a class="ps-btn" href="cart.html">Check out<i class="ps-icon-arrow-left"></i></a>
+        <div class="ps-cart__footer"><a class="ps-btn" href="{{ route('checkout') }}">Check out<i class="ps-icon-arrow-left"></i></a>
         </div>
     </div>
 </div>

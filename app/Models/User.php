@@ -75,4 +75,19 @@ class User extends Authenticatable implements MustVerifyEmail
     public function products(){
         return $this->hasMany(Product::class);
     }
+
+    public function routeNotificationForMail($notification = null)
+    {
+        return $this->email;
+    }
+
+    public function routeNotificationForNexmo($notification = null)
+    {
+        return $this->mobile;
+    }
+
+//    public function receivesBrodcastNotificationsOn()
+//    {
+//        return 'notifications.'. $this->id;
+//    }
 }
