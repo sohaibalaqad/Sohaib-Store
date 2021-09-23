@@ -2,12 +2,14 @@
 
 namespace App\Notifications;
 
+use App\Channels\TweetSmsChannel;
 use App\Models\Order;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Messages\NexmoMessage;
 use Illuminate\Notifications\Notification;
 
 class OrderCreatedNotification extends Notification
@@ -38,9 +40,10 @@ class OrderCreatedNotification extends Notification
         $via = [
             'database',
 //            FcmChannel::class,
-            'mail', 'broadcast',
+//            'mail',
+            'broadcast',
 //            'nexmo'
-            //TweetSmsChannel::class
+//            TweetSmsChannel::class
         ];
 //        if ($notifiable->notify_sms) {
 //            $via[] = 'nexmo';
@@ -110,6 +113,22 @@ class OrderCreatedNotification extends Notification
             'url' => url('/'),
             'time' => Carbon::now()->diffForHumans(),
         ]);
+    }
+
+    /**
+     * @param $notifiable
+     * @return NexmoMessage
+     */
+    public function toNexmo($notifiable)
+    {
+        $message = new NexmoMessage();
+        $message->content(__('New order #:number', ['number' => $this->order->number]));
+        return $message;
+    }
+
+    public function toTweetSms($notifiable)
+    {
+        return __('New order #:number', ['number' => $this->order->number]);
     }
 
     /**

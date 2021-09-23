@@ -86,6 +86,10 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->mobile;
     }
 
+    public function routeNotificationForTweetSms()
+    {
+        return $this->mobile;
+    }
 //    public function receivesBrodcastNotificationsOn()
 //    {
 //        return 'notifications.'. $this->id;
