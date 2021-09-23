@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Str;
 
 class Category extends Model
 {
@@ -33,6 +34,24 @@ class Category extends Model
         'name', 'parent_id', 'slug', 'status', 'description',
     ];
 
+
+    // for API
+    protected $hidden = [
+        'created_at', 'updated_at', 'deleted_at'
+    ];
+
+    // for API
+    protected $appends = [
+        'original_name'
+    ];
+
+    protected static function booted()
+    {
+        static::creating(function (Category $category){
+            $category->slug = Str::slug($category->name);
+        });
+    }
+
     /**
      * Accessors
      * named =>> get[AttributeName]Attribute
@@ -56,7 +75,7 @@ class Category extends Model
         return $this->hasMany(Product::class, 'category_id', 'id');
     }
 
-    public function childern(){
+    public function children(){
         return $this->hasMany(Category::class, 'parent_id', 'id');
     }
 
@@ -66,4 +85,12 @@ class Category extends Model
                 'name' => 'No Parent',
             ]);
     }
+
+    /*public function toJson($options = 0)
+    {
+        return json_encode([
+                'id' => $this->id,
+                'name' => $this->name,
+        ]);
+    }*/
 }
