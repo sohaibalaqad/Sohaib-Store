@@ -11,6 +11,13 @@ use Illuminate\Notifications\Messages\BroadcastMessage;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Messages\NexmoMessage;
 use Illuminate\Notifications\Notification;
+use NotificationChannels\Fcm\FcmChannel;
+use NotificationChannels\Fcm\FcmMessage;
+use NotificationChannels\Fcm\Resources\AndroidConfig;
+use NotificationChannels\Fcm\Resources\AndroidFcmOptions;
+use NotificationChannels\Fcm\Resources\AndroidNotification;
+use NotificationChannels\Fcm\Resources\ApnsConfig;
+use NotificationChannels\Fcm\Resources\ApnsFcmOptions;
 
 class OrderCreatedNotification extends Notification
 {
@@ -39,9 +46,9 @@ class OrderCreatedNotification extends Notification
         // mail, database, nexmo (SMS), broadcast, slack, [Custom channel]
         $via = [
             'database',
-//            FcmChannel::class,
+            FcmChannel::class,
+//            'broadcast',
 //            'mail',
-            'broadcast',
 //            'nexmo'
 //            TweetSmsChannel::class
         ];
@@ -131,6 +138,22 @@ class OrderCreatedNotification extends Notification
         return __('New order #:number', ['number' => $this->order->number]);
     }
 
+    public function toFcm($notifiable)
+    {
+        return FcmMessage::create()
+            ->setData(['order_id' => $this->order->id])
+            ->setNotification(\NotificationChannels\Fcm\Resources\Notification::create()
+                ->setTitle('New order')
+                ->setBody(__('New order #:number', ['number' => $this->order->number]))
+                ->setImage('http://example.com/url-to-image-here.png'))
+            ->setAndroid(
+                AndroidConfig::create()
+                    ->setFcmOptions(AndroidFcmOptions::create()->setAnalyticsLabel('analytics'))
+                    ->setNotification(AndroidNotification::create()->setColor('#0A0A0A'))
+            )->setApns(
+                ApnsConfig::create()
+                    ->setFcmOptions(ApnsFcmOptions::create()->setAnalyticsLabel('analytics_ios')));
+    }
     /**
      * Get the array representation of the notification.
      *
