@@ -12,6 +12,7 @@ use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\ProductsController as ControllersProductsController;
 use App\Http\Controllers\MessagesController;
 use App\Http\Controllers\Admin\NotificationsController;
+use App\Http\Controllers\Admin\UserProfileController;
 use App\Models\Product;
 use Illuminate\Support\Facades\Route;
 
@@ -32,19 +33,23 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 })->middleware(['auth:admin,web'])->name('dashboard');
 
-require __DIR__ . '/auth.php';
+// Breeze Authentication
+/*require __DIR__ . '/auth.php';
 
 Route::prefix('admin')
 //    ->namespace('Admin')
     ->as('admin.')
     ->group(function (){
         require __DIR__ . '/auth.php';
-    });
+});*/
 
 Route::namespace('Admin')
-    ->prefix('{lang}/admin')
-    ->middleware(['auth:admin', 'auth.type:admin,super-admin'])
+//    ->domain('admin.localhost')
+    ->prefix('admin')
+    ->middleware(['auth:admin,web', 'auth.type:admin,super-admin'])
     ->group(function (){
+        Route::get('profile', [UserProfileController::class, 'index'])
+            ->name('profile');
         Route::get('notifications', [NotificationsController::class, 'index'])->name('notifications');
         Route::get('notifications/{id}', [NotificationsController::class, 'show'])->name('notifications.read');
         Route::group([
