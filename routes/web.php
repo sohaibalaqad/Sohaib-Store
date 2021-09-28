@@ -30,13 +30,20 @@ Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
-})->middleware(['auth'])->name('dashboard');
+})->middleware(['auth:admin,web'])->name('dashboard');
 
 require __DIR__ . '/auth.php';
 
+Route::prefix('admin')
+//    ->namespace('Admin')
+    ->as('admin.')
+    ->group(function (){
+        require __DIR__ . '/auth.php';
+    });
+
 Route::namespace('Admin')
     ->prefix('{lang}/admin')
-    ->middleware(['auth', 'auth.type:admin,super-admin'])
+    ->middleware(['auth:admin', 'auth.type:admin,super-admin'])
     ->group(function (){
         Route::get('notifications', [NotificationsController::class, 'index'])->name('notifications');
         Route::get('notifications/{id}', [NotificationsController::class, 'show'])->name('notifications.read');

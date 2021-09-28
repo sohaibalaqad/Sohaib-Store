@@ -10,6 +10,15 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthenticatedSessionController extends Controller
 {
+    protected $guard = 'web';
+
+    public function __construct(Request $request)
+    {
+        if ($request->is('admin/*')){
+            $this->guard = 'admin';
+        }
+    }
+
     /**
      * Display the login view.
      *
@@ -17,7 +26,10 @@ class AuthenticatedSessionController extends Controller
      */
     public function create()
     {
-        return view('auth.login');
+        return view('auth.login', [
+            'guard' => $this->guard,
+            'route' => $this->guard == 'admin' ? route('admin.login') : route('login'),
+        ]);
     }
 
     /**
@@ -28,6 +40,8 @@ class AuthenticatedSessionController extends Controller
      */
     public function store(LoginRequest $request)
     {
+        $request->guard = ($this->guard);
+
         $request->authenticate();
 
         $request->session()->regenerate();
@@ -43,7 +57,7 @@ class AuthenticatedSessionController extends Controller
      */
     public function destroy(Request $request)
     {
-        Auth::guard('web')->logout();
+        Auth::guard($this->guard)->logout();
 
         $request->session()->invalidate();
 

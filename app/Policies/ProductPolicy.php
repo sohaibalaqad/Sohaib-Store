@@ -10,7 +10,7 @@ class ProductPolicy
 {
     use HandlesAuthorization;
 
-    public function before(User $user, $ability)
+    public function before($user, $ability)
     {
         if ($user->type == 'super-admin') {
             return true;
@@ -22,7 +22,7 @@ class ProductPolicy
      * @param  \App\Models\User  $user
      * @return mixed
      */
-    public function viewAny(User $user)
+    public function viewAny($user)
     {
         return $user->hasAbility('products.view-any');
     }
@@ -34,7 +34,7 @@ class ProductPolicy
      * @param  \App\Models\Product  $product
      * @return mixed
      */
-    public function view(User $user, Product $product)
+    public function view($user, Product $product)
     {
         return $user->hasAbility('products.view');
     }
@@ -45,7 +45,7 @@ class ProductPolicy
      * @param  \App\Models\User  $user
      * @return mixed
      */
-    public function create(User $user)
+    public function create($user)
     {
         return $user->hasAbility('products.create');
     }
@@ -57,7 +57,7 @@ class ProductPolicy
      * @param  \App\Models\Product  $product
      * @return mixed
      */
-    public function update(User $user, Product $product)
+    public function update($user, Product $product)
     {
         return $user->hasAbility('products.update');
     }
@@ -69,7 +69,7 @@ class ProductPolicy
      * @param  \App\Models\Product  $product
      * @return mixed
      */
-    public function delete(User $user, Product $product)
+    public function delete($user, Product $product)
     {
         return $user->hasAbility('products.delete');
     }
@@ -81,7 +81,7 @@ class ProductPolicy
      * @param  \App\Models\Product  $product
      * @return mixed
      */
-    public function restore(User $user, Product $product)
+    public function restore($user, Product $product)
     {
         return $user->hasAbility('products.restore');
     }
@@ -93,13 +93,13 @@ class ProductPolicy
      * @param  \App\Models\Product  $product
      * @return mixed
      */
-    public function forceDelete(User $user, Product $product)
+    public function forceDelete($user, Product $product)
     {
         return $user->hasAbility('products.force-delete');
     }
-    
+
     //
-    public function changePrice(User $user, Product $product)
+    public function changePrice($user, Product $product)
     {
         return $user->hasAbility('products.change-price');
     }
