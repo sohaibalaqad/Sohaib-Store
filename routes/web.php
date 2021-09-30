@@ -120,3 +120,11 @@ Route::get('/orders', function (){
 Route::get('chat', [MessagesController::class, 'index'])
     ->name('chat');
 Route::post('chat', [MessagesController::class, 'store']);
+
+/*
+Route::get('/test-fcm', function() {
+    \App\Models\User::find(2)->notify(new \App\Notifications\OrderCreatedNotification(new \App\Models\Order()));
+});
+*/
+
+Route::get('send/emails', [\App\Http\Controllers\Admin\SendEmailsController::class, 'send']);

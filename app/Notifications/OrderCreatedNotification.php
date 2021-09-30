@@ -46,7 +46,7 @@ class OrderCreatedNotification extends Notification
         // mail, database, nexmo (SMS), broadcast, slack, [Custom channel]
         $via = [
             'database',
-            FcmChannel::class,
+//            FcmChannel::class,
 //            'broadcast',
 //            'mail',
 //            'nexmo'
